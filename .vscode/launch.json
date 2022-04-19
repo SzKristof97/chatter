@@ -9,7 +9,7 @@
             "name": "Launch Main",
             "request": "launch",
             "mainClass": "me.szkristof.chatter.Main",
-            "projectName": "Chatter"
+            "projectName": "chatter_4c26739e"
         }
     ]
 }
