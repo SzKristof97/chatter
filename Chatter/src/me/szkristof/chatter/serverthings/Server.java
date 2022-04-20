@@ -10,6 +10,8 @@ public class Server {
     
     //#region Propertes
     private ServerSocket serverSocket;
+
+    public boolean isRunning = false;
     //#endregion
     
     //#region Constructors
@@ -39,23 +41,31 @@ public class Server {
      */
     public void Start() {
         if(serverSocket == null) {
-            ConsoleManager.WriteMessage("Failed to start server.");
+            ConsoleManager.WriteMessage("Failed to start server.\n");
+            ConsoleManager.ReadString("Press enter to continue...");
             return;
         }
 
-        while(!serverSocket.isClosed()){
-            try{
-                Socket socket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(socket);
-
-                Thread thread = new Thread(clientHandler);
-                thread.start();
-
-                ConsoleManager.WriteMessage("Client connected.");
-            }catch(Exception ex){
-                ConsoleManager.WriteMessage("Failed to accept client.");
+        new Thread(new Runnable(){
+            @Override
+            public void run(){
+                while(!serverSocket.isClosed()){
+                    try{
+                        Socket socket = serverSocket.accept();
+                        ClientHandler clientHandler = new ClientHandler(socket);
+        
+                        Thread thread = new Thread(clientHandler);
+                        thread.start();
+        
+                        isRunning = true;
+                        ConsoleManager.WriteMessage("Client connected.\n");
+                    }catch(Exception ex){
+                        ConsoleManager.WriteMessage("Failed to accept client.\n");
+                        isRunning = false;
+                    }
+                }
             }
-        }
+        }).start();
     }
 
     /**
@@ -65,13 +75,17 @@ public class Server {
         try {
             if(serverSocket == null || serverSocket.isClosed())
             {
-                ConsoleManager.WriteMessage("The server is not running or already stopped!");
+                ConsoleManager.WriteMessage("The server is not running or already stopped!\n");
+                ConsoleManager.ReadString("Press enter to continue...");
                 return;
             }
-
+            
             serverSocket.close();
+            isRunning = false;
         } catch (IOException e) {
-            ConsoleManager.WriteMessage("Failed to stop server.");
+            ConsoleManager.WriteMessage("Failed to stop server.\n");
+            ConsoleManager.ReadString("Press enter to continue...");
+            isRunning = false;
         }
     }
     //#endregion

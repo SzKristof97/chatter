@@ -158,8 +158,9 @@ public class XmlManager {
 
             // Create the user
             user = new User(userNameValue);
-        }catch(Exception ex){
-            ex.printStackTrace();
+        }catch(Exception ex)
+        {
+            user = null;
         }
         return user;
     }

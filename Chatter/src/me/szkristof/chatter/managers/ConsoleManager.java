@@ -62,6 +62,17 @@ public class ConsoleManager {
     }
 
     /**
+     * Ellenőrzi, hogy a felhasználó által lenyomott gomb megegyezik a megadott gombbal.
+     * @param key A gomb
+     */
+    public static boolean IsKeyPressed(int keyCode){
+        try {
+            return System.in.available() > 0 && System.in.read() == keyCode;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+    /**
      * Beolvas a konzolról egy igaz/hamis értéket.
      * @param message Kiírandó üzenet a konzolra
      * @return Igaz ha igaz/i, hamis ha hamis/h
@@ -89,7 +100,22 @@ public class ConsoleManager {
      * Törli a képernyőt
      */
     public static void Clear() {
-        System.out.print("\033[H\033[2J");
+        String os = System.getProperty("os.name");
+
+        if (os.contains("Windows")) {
+            try {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } catch (Exception e) {
+                System.out.println("Failed to clear console.");
+            }
+        } else {
+            try {
+                Runtime.getRuntime().exec("clear");
+            } catch (Exception e) {
+                System.out.println("Failed to clear console.");
+            }
+        }
+
         System.out.flush();
     }
 }

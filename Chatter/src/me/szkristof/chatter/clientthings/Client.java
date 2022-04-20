@@ -41,7 +41,7 @@ public class Client {
                 }
                 ConsoleManager.Clear();
             }else{
-                ConsoleManager.WriteMessage("Your user name is: " + currentClient.GetUser().GetName());
+                ConsoleManager.WriteMessage("Your user name is: " + currentClient.GetUser().GetName() + "\n");
                 boolean wantToChange = ConsoleManager.ReadBoolean("Do you want to change your name? (y/n)", "y", "n");
                 if(wantToChange){
                     String newName = ConsoleManager.ReadString("Enter your new name: ");
@@ -52,12 +52,14 @@ public class Client {
                 ConsoleManager.Clear();
             }
 
-            SendWelcomeMessage();
-
             reader = new BufferedReader(new java.io.InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new java.io.OutputStreamWriter(socket.getOutputStream()));
+
+            ConsoleManager.WriteMessage("Send a blank message to exit.\n");
+
+            SendWelcomeMessage();
         }catch(Exception e){
-            ConsoleManager.WriteMessage("Failed to initialize client handler.");
+            ConsoleManager.WriteMessage("Failed to initialize client handler.\n");
             stop(socket, reader, writer);
         }
     }
@@ -109,7 +111,12 @@ public class Client {
      */
     public void SendMessage(){
         try{
-            String message = ConsoleManager.ReadString("Enter your message: ");
+            String message = ConsoleManager.ReadString("");
+            if(message == null || message.isEmpty() || message.equals("")){
+                stop(socket, reader, writer);
+                return;
+            }
+
             writer.write(message);
             writer.newLine();
             writer.flush();
@@ -127,25 +134,29 @@ public class Client {
             new Thread(new Runnable(){
                 @Override
                 public void run(){
-                    while(socket.isClosed()){
+                    while(!socket.isClosed()){
                         try{
                             String message = reader.readLine();
                             if(message.startsWith("@Username=")){
                                 String username = message.substring(10, message.indexOf("@Message="));
+                                if(username.equals(currentClient.GetUser().GetName())){
+                                    continue;
+                                }
+
                                 String message2 = message.substring(message.indexOf("@Message=") + 9);
-                                ConsoleManager.WriteMessage(username + ": " + message2);
+                                ConsoleManager.WriteMessage(username + ": " + message2 + "\n");
                             }else{
-                                ConsoleManager.WriteMessage("Cannot identify the sender of the message.");
+                                ConsoleManager.WriteMessage("Cannot identify the sender of the message.\n");
                             }
                         }catch(Exception e){
-                            ConsoleManager.WriteMessage("Failed to read a message from server.");
+                            ConsoleManager.WriteMessage("Failed to read a message from server.\n");
                             stop(socket, reader, writer);
                         }
                     }
                 }
             }).start();
         }catch(Exception e){
-            ConsoleManager.WriteMessage("Failed to listen for messages from server.");
+            ConsoleManager.WriteMessage("Failed to listen for messages from server.\n");
             stop(socket, reader, writer);
         }
     }

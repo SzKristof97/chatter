@@ -36,7 +36,7 @@ public class ClientHandler implements Runnable{
             Broadcast(username, "has joined the server.");
             clientHandlers.add(this);
         }catch(Exception e){
-            ConsoleManager.WriteMessage( "Failed to initialize client handler.");
+            ConsoleManager.WriteMessage( "Failed to initialize client handler.\n");
             stop(socket, reader, writer);
         }
     }
@@ -58,7 +58,8 @@ public class ClientHandler implements Runnable{
                     Broadcast(username, messageFromClient);
                 }
             }catch(Exception e){
-                ConsoleManager.WriteMessage( "Failed to read message from client.");
+                ConsoleManager.WriteMessage( "Failed to read message from client.\n");
+                ConsoleManager.WriteMessage( e.getMessage());
                 stop(socket, reader, writer);
                 break;
             }
@@ -72,7 +73,7 @@ public class ClientHandler implements Runnable{
                 clientHandler.writer.newLine();
                 clientHandler.writer.flush();
             }catch(Exception e){
-                ConsoleManager.WriteMessage( "Failed to send message to client.");
+                ConsoleManager.WriteMessage( "Failed to send message to client.\n");
                 stop(clientHandler.socket, clientHandler.reader, clientHandler.writer);
             }
         }
@@ -85,7 +86,7 @@ public class ClientHandler implements Runnable{
                 clientHandler.writer.newLine();
                 clientHandler.writer.flush();
             }catch(Exception e){
-                ConsoleManager.WriteMessage( "Failed to send message to client.");
+                ConsoleManager.WriteMessage( "Failed to send message to client.\n");
                 stop(clientHandler.socket, clientHandler.reader, clientHandler.writer);
             }
         }
@@ -111,7 +112,7 @@ public class ClientHandler implements Runnable{
                 socket2.close();
             }
         }catch(Exception e){
-            ConsoleManager.WriteMessage( "Failed to close client handler.");
+            ConsoleManager.WriteMessage( "Failed to close client handler.\n");
         }
     }
 
