@@ -123,6 +123,7 @@ public class MainGUI extends JFrame {
     public boolean Message(String text){
         if(text.length() > 0){
             console.setText(console.getText() + "Server >> " + text + "\n");
+            ScrollToBottom();
             return true;
         }
         return false;
@@ -137,6 +138,7 @@ public class MainGUI extends JFrame {
     public boolean Message(User user, String text){
         if(text.length() > 0){
             console.setText(console.getText() + user.getUsername() + " >> " + text + "\n");
+            ScrollToBottom();
             return true;
         }
         return false;
@@ -151,6 +153,7 @@ public class MainGUI extends JFrame {
     public boolean Message(String user, String text){
         if(text.length() > 0){
             console.setText(console.getText() + user + " >> " + text + "\n");
+            ScrollToBottom();
             return true;
         }
         return false;
